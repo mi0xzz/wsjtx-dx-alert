@@ -3,17 +3,31 @@ import json
 import socketserver
 
 from .config import settings
-from .util import publish_mqtt
-from .WSJTX import WSJTXPacket, WSJTXDecodePacket
+from .util import publish_mqtt, check_exclude_callsign_list, defined_frequencies
+from .WSJTX import WSJTXPacket, WSJTXDecodePacket, WSJTXStatusPacket
 
 logger = logging.getLogger(__name__)
+
 
 class WSJTXUDPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         datagram = self.request[0].strip()
+        self.parse_datagram(datagram)
+
+    def parse_datagram(self, datagram):
         wsjtxmsg = WSJTXPacket.from_udp_packet(datagram)
 
-        if type(wsjtxmsg) is WSJTXDecodePacket:
+        # We need to be aware of the current frequency but this doesn't appear within decode packets
+        # In order to get the current frequency, handle a status message first and then allow decode messages
+        if type(wsjtxmsg) is WSJTXStatusPacket and not self.server._currentFreq:
+            logging.debug("Setting currentFreq from WSJTXStatusPacket")
+
+            # check and make sure that the currentFreq is allowed within our settings
+            # if it is then set the current_freq variable within the server
+            if defined_frequencies(wsjtxmsg.current_freq):
+                self.server._currentFreq = wsjtxmsg.current_freq
+
+        elif type(wsjtxmsg) is WSJTXDecodePacket and self.server._currentFreq:
             msgcontent = wsjtxmsg.content
 
             # Look for messages with the following format
@@ -23,7 +37,7 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
 
                 # only publish to mqtt if it's really DX
                 # so check the exclude callsign list first
-                if not exclude_callsign(callsign):
+                if not check_exclude_callsign_list(callsign):
                     payload = json.dumps(
                         {"callsign":callsign,
                          "locator":locator,
@@ -33,13 +47,17 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
                     publish_mqtt(payload)
 
 
-def exclude_callsign(callsign):
-    return any(callsign.startswith(key) for key in settings["EXCLUDE_CALLSIGNS"])
+class WSJTXDecodeServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
+    daemon_threads = True
+    allow_reuse_address = True
+
+    def __init__(self, server_address, RequestHandlerClass):
+        self._currentFreq = None
+        socketserver.UDPServer.__init__(self, server_address, RequestHandlerClass)
 
 
 def start_udp_server():
     logger.debug("Starting UDP server")
-    serverAddress = (settings["SERVER_IP"],
-                     settings["SERVER_PORT"])
-    serverUDP = socketserver.UDPServer(serverAddress, WSJTXUDPHandler)
-    serverUDP.serve_forever()
+    server = WSJTXDecodeServer((settings["SERVER_IP"],
+                                settings["SERVER_PORT"]), WSJTXUDPHandler)
+    server.serve_forever()
