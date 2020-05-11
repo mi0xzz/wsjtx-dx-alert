@@ -29,7 +29,7 @@ class ValueBuffer:
         b = self._buffer[self._idx:self._idx+size]
         self._idx += size
 
-        return struct.unpack('>Q', b)
+        return struct.unpack('>Q', b)[0]
 
     def read_string(self):
         strlen = self.read_uint()
@@ -94,8 +94,12 @@ class WSJTXStatusPacket:
     def __init__(self, data):
         WSJTXPacket.__init__(self, data)
 
-        dialfreq = self._buffer.read_longlong()
-        mode = self._buffer.read_string()
+        self._dial_freq = self._buffer.read_longlong()
+        self._mode = self._buffer.read_string()
+
+    @property
+    def current_freq(self):
+        return self._dial_freq
 
 
 class WSJTXHearbeatPacket:
