@@ -1,1 +1,4 @@
-/venv/
+venv/
+wsjtx-dx-alert/__pycache__/
+.git
+.idea
