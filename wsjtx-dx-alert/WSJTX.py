@@ -95,13 +95,13 @@ class WSJTXStatusPacket:
         WSJTXPacket.__init__(self, data)
 
         dialfreq = self._buffer.read_longlong()
-        #mode = self._buffer.read_string()
+        mode = self._buffer.read_string()
 
 
 class WSJTXHearbeatPacket:
     def __init__(self, data):
         WSJTXPacket.__init__(self, data)
 
-        #self._buffer.read(4)
-        #self._version = self._buffer.read_string()
-        #self._revision = self._buffer.read_string()
+        self._buffer.read(4)
+        self._version = self._buffer.read_string()
+        self._revision = self._buffer.read_string()
