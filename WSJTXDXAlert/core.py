@@ -20,20 +20,18 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
         # We need to be aware of the current frequency but this doesn't appear within decode packets
         # In order to get the current frequency, handle a status message first and then allow decode messages
         if type(wsjtxmsg) is WSJTXStatusPacket and not self.server._currentFreq:
-            logging.debug("Setting currentFreq from WSJTXStatusPacket")
-
             # check and make sure that the currentFreq is allowed within our settings
             # if it is then set the current_freq variable within the server
             if defined_frequencies(wsjtxmsg.current_freq):
                 self.server._currentFreq = wsjtxmsg.current_freq
 
         elif type(wsjtxmsg) is WSJTXDecodePacket and self.server._currentFreq:
-            msgcontent = wsjtxmsg.content
+            msg_content = wsjtxmsg.content
 
             # Look for messages with the following format
             # CQ <CALLSIGN> <LOCATOR>
-            if msgcontent.startswith('CQ') and msgcontent.count(' ') == 2:
-                _, callsign, locator = msgcontent.split(" ")
+            if msg_content.startswith('CQ') and msg_content.count(' ') == 2:
+                _, callsign, locator = msg_content.split(" ")
 
                 # only publish to mqtt if it's really DX
                 # so check the exclude callsign list first
