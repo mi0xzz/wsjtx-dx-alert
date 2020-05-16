@@ -24,6 +24,13 @@ class ValueBuffer:
 
         return struct.unpack('>i', b)[0]
 
+    def read_bool(self):
+        size = 1
+        b = self._buffer[self._idx:self._idx+size]
+        self._idx += size
+
+        return struct.unpack('>?', b)[0]
+
     def read_longlong(self, packed=True):
         size = 8
         b = self._buffer[self._idx:self._idx+size]
@@ -72,14 +79,18 @@ class WSJTXDecodePacket:
         WSJTXPacket.__init__(self, data)
 
         # skip through most of the packet as don't care about this stuff yet
-        self._buffer.read(1)                # new decode
-        self._buffer.read(4)                # time
-        self._snr = self._buffer.read_int() # snr
-        self._buffer.read(8)                # delta time
-        self._buffer.read(4)                # delta freq
+        self._newcall = self._buffer.read_bool()    # new decode
+        self._buffer.read(4)                        # time
+        self._snr = self._buffer.read_int()         # snr
+        self._buffer.read(8)                        # delta time
+        self._buffer.read(4)                        # delta freq
         # skip the mode string. need to go back and look at this TODO
         self._buffer.read_string()
         self._message = self._buffer.read_string()
+
+    @property
+    def newcall(self):
+        return self._newcall
 
     @property
     def content(self):
