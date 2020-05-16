@@ -3,7 +3,7 @@ import json
 import socketserver
 
 from .config import settings
-from .util import publish_mqtt, check_exclude_callsign_list, defined_frequencies
+from .util import publish_mqtt, callsign_dx_validated, defined_frequencies
 from .WSJTX import WSJTXPacket, WSJTXDecodePacket, WSJTXStatusPacket
 
 logger = logging.getLogger(__name__)
@@ -19,13 +19,13 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
 
         # We need to be aware of the current frequency but this doesn't appear within decode packets
         # In order to get the current frequency, handle a status message first and then allow decode messages
-        if type(wsjtxmsg) is WSJTXStatusPacket and not self.server._currentFreq:
+        if type(wsjtxmsg) is WSJTXStatusPacket and not self.server._current_freq:
             # check and make sure that the currentFreq is allowed within our settings
             # if it is then set the current_freq variable within the server
             if defined_frequencies(wsjtxmsg.current_freq):
-                self.server._currentFreq = wsjtxmsg.current_freq
+                self.server._current_freq = wsjtxmsg.current_freq
 
-        elif type(wsjtxmsg) is WSJTXDecodePacket and self.server._currentFreq:
+        elif type(wsjtxmsg) is WSJTXDecodePacket and self.server._current_freq:
             msg_content = wsjtxmsg.content
 
             # Look for messages with the following format
@@ -33,9 +33,11 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
             if msg_content.startswith('CQ') and msg_content.count(' ') == 2:
                 _, callsign, locator = msg_content.split(" ")
 
-                # only publish to mqtt if it's really DX
-                # so check the exclude callsign list first
-                if not check_exclude_callsign_list(callsign):
+                # only publish to mqtt if it meets the following conditions
+                # Meets MIN_DX setting
+                # Not in the exclude callsign list
+                # The setting to only display new callsigns has been enabled
+                if callsign_dx_validated(self.server._current_freq, callsign, locator) and wsjtxmsg.newcall:
                     payload = json.dumps(
                         {"callsign":callsign,
                          "locator":locator,
@@ -50,7 +52,7 @@ class WSJTXDecodeServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     allow_reuse_address = True
 
     def __init__(self, server_address, RequestHandlerClass):
-        self._currentFreq = None
+        self._current_freq = None
         socketserver.UDPServer.__init__(self, server_address, RequestHandlerClass)
 
 
