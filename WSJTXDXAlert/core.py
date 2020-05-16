@@ -41,7 +41,8 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
                     payload = json.dumps(
                         {"callsign":callsign,
                          "locator":locator,
-                         "snr": wsjtxmsg.snr
+                         "snr": wsjtxmsg.snr,
+                         "freq": self.server._current_freq
                          }
                     )
                     publish_mqtt(payload)
