@@ -2,7 +2,7 @@
 
 Installation is manual but trivial. To avoid the need to install system-wide Python packages, creating a virtual environment is recommended.
 
-apt-get update
+apt-get update\
 cd /opt
 git clone https://github.com/mi0xzz/wsjtx-dx-alert
 cd /opt/wsjtx-dx-alert
