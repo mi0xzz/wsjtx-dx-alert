@@ -21,7 +21,7 @@ _wsjtx-dx-alert_ will send a message to the MQTT broker with the callsign inform
 The MQTT broker that I use is _Mosquitto_ (<https://mosquitto.org>) and I run it on the same system running _wsjtx-dx-alert_. On a Debian based system this can be installed as follows:
 
 apt-get install mosquitto\
-sudo systemctl enable mosquitto.service
+sudo systemctl enable mosquitto.service\
 sudo systemctl start mosquitto.service
 
 Node-RED should also be installed which basically pulls the messages from _Mosquitto_ and sends them onto a _Telegram_ bot as shown by the following screenshot.
