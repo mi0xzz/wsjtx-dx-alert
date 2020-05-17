@@ -62,3 +62,7 @@ def start_udp_server():
     server = WSJTXDecodeServer((settings["SERVER_IP"],
                                 settings["SERVER_PORT"]), WSJTXUDPHandler)
     server.serve_forever()
+
+
+if __name__ == "__main__":
+    start_udp_server()
