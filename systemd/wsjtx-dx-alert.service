@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/wsjtx-dx-alert
-ExecStart=/opt/wsjtx-dx-alert/venv/python3 -m WSJTXDXAlert
+ExecStart=/opt/wsjtx-dx-alert/venv/bin/python3 -m WSJTXDXAlert
 Restart=always
 
 [Install]
