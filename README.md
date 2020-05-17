@@ -18,7 +18,7 @@ When the wsjtx-dx-alert module receives messages from WSJTX, it will handle them
 create a configuration so that I only receive messages to my phone if a station more than 1000 miles away has been decoded. If there are stations which meet these requirements then
 _wsjtx-dx-alert_ will send a message to the MQTT broker with the callsign information.
 
-The MQTT broker that I use is _Mosquitto_ <https://mosquitto.org> and I run it on the same system running _wsjtx-dx-alert_. On a Debian based system this can be installed as follows:
+The MQTT broker that I use is _Mosquitto_ (<https://mosquitto.org>) and I run it on the same system running _wsjtx-dx-alert_. On a Debian based system this can be installed as follows:
 
 apt-get install mosquitto\
 sudo systemctl enable mosquitto.service
