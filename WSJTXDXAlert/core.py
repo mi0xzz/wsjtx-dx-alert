@@ -36,8 +36,7 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
                 # only publish to mqtt if it meets the following conditions
                 # Meets MIN_DX setting
                 # Not in the exclude callsign list
-                # The setting to only display new callsigns has been enabled
-                if callsign_dx_validated(self.server._dial_freq, callsign, locator, wsjtxmsg.newcall):
+                if callsign_dx_validated(self.server._dial_freq, callsign, locator):
                     payload = json.dumps(
                         {"callsign":callsign,
                          "locator":locator,
