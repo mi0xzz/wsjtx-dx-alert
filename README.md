@@ -27,7 +27,7 @@ sudo systemctl start mosquitto.service
 Node-RED should also be installed which basically pulls the messages from _Mosquitto_ and sends them onto a _Telegram_ bot as shown by the following screenshot.
 In this example, I'm receiving messages when stations of over 1000 miles have been seen.
 
-![Telegram 40m DX][images/wsjtx-dx-alert-Telegram.png]
+![Telegram 40m DX](images/wsjtx-dx-alert-Telegram.png)
 
 I'll continue updating things as I use this myself over the next few months on 2m and 6m. Feel free to get in touch with questions/ideas etc._
 
