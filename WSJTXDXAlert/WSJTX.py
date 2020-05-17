@@ -109,7 +109,7 @@ class WSJTXStatusPacket:
         self._mode = self._buffer.read_string()
 
     @property
-    def current_freq(self):
+    def dial_freq(self):
         return self._dial_freq
 
 
