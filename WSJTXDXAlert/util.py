@@ -41,15 +41,27 @@ def min_distance(current_freq, dxlocator):
     # if MIN_DX is not specified then return True
     return True
 
+def only_newcall_notify(current_freq, isnewcall):
+    band_settings = get_band_settings(current_freq)
+
+    if "ONLY_NEWCALL" in band_settings:
+        if band_settings["ONLY_NEWCALL"] and not isnewcall:
+            return False
+
+    return True
+
+
 def get_band_settings(current_freq):
     if current_freq in settings["BANDS"]:
-        return settings["BANDS"][current_freq]
-    else:
-        return None
+        if settings["BANDS"][current_freq]:
+            return settings["BANDS"][current_freq]
+    return {}
 
 
-def callsign_dx_validated(current_freq, callsign, locator):
-    if not exclude_callsign(current_freq, callsign) and min_distance(current_freq, locator):
+def callsign_dx_validated(current_freq, callsign, locator, isnewcall):
+    if not exclude_callsign(current_freq, callsign) and \
+            min_distance(current_freq, locator) and \
+            only_newcall_notify(current_freq, isnewcall):
         return True
     else:
         return False
