@@ -35,8 +35,11 @@ def min_distance(current_freq, dxlocator):
 
         if dx > min_dx:
             return True
+        else:
+            return False
 
-    return False
+    # if MIN_DX is not specified then return True
+    return True
 
 def get_band_settings(current_freq):
     if current_freq in settings["BANDS"]:
