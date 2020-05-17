@@ -24,7 +24,6 @@ class WSJTXUDPHandler(socketserver.BaseRequestHandler):
             # if it is then set the dial_freq variable within the server
             if defined_frequencies(wsjtxmsg.dial_freq):
                 self.server._dial_freq = wsjtxmsg.dial_freq
-                print(wsjtxmsg.dial_freq)
 
         elif type(wsjtxmsg) is WSJTXDecodePacket and self.server._dial_freq:
             msg_content = wsjtxmsg.content
