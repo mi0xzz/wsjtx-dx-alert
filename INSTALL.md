@@ -4,7 +4,7 @@ Installation is manual but trivial. To avoid the need to install system-wide Pyt
 
 apt-get update\
 cd /opt\
-git clone https://github.com/mi0xzz/wsjtx-dx-alert\
+git clone https://github.com/mi0xzz/wsjtx-dx-alert \
 cd /opt/wsjtx-dx-alert\
 virtualenv venv --python=/usr/bin/python3\
 source venv/bin/activate\
