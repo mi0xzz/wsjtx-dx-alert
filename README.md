@@ -14,4 +14,20 @@ where I have specified the UDP server as _192.168.1.249_.
 
 ![WSJTX Settings](images/WSJTX-Settings.png)
 
+When the wsjtx-dx-alert module receives messages from WSJTX, it will handle them based on whatever has been defined in the configuration file (_settings.yaml_). For example, I could
+create a configuration so that I only receive messages to my phone if a station more than 1000 miles away has been decoded. If there are stations which meet these requirements then
+_wsjtx-dx-alert_ will send a message to the MQTT broker with the callsign informathttps://mosquitto.org/ion.
+
+The MQTT broker that I use is _Mosquitto_ <https://mosquitto.org> and I run it on the same system running _wsjtx-dx-alert_. On a Debian based system this can be installed as follows:
+
+apt-get install mosquitto\
+sudo systemctl enable mosquitto.service
+sudo systemctl start mosquitto.service
+
+Node-RED should also be installed which basically pulls the messages from _Mosquitto_ and sends them onto a _Telegram_ bot as shown by the following screenshot.
+In this example, I'm receiving messages when stations of over 1000 miles have been seen.
+
+![Telegram 40m DX][images/wsjtx-dx-alert-Telegram.png]
+
+I'll continue updating things as I use this myself over the next few months on 2m and 6m. Feel free to get in touch with questions/ideas etc._
 
