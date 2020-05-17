@@ -12,3 +12,9 @@ pip install -r requirements.txt
 sudo cp systemd/wsjtx-dx-alert.service /etc/systemd/system/
 sudo systemctl enable wsjtx-dx-alert.service
 sudo systemctl start wsjtx-dx-alert.service
+
+Upon doing this, the module is now running as a service and should _hopefully_ continue as normal.
+
+If you make any changes to the _settings.yaml_ file then you'll need to restart the service which can be done with the following command:
+
+sudo systemctl restart wsjtx-dx-alert.service
