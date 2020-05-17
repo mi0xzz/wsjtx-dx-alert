@@ -9,5 +9,9 @@ The _wsjtx-dx-module_ is intended to run as part of a larger setup which is summ
 
 WSJTX -> wsjtx-dx-alert -> MQTT -> Node-RED -> Telegram Bot
 
-First of all, the WSJTX software should be configured to send
+First of all, the WSJTX software should be configured to send status updates to the system running the _wsjtx-dx-module_. An example of my own system is shown in the screenshot below
+where I have specified the UDP server as _192.168.1.249_.
+
+![WSJTX Settings](images/WSJTX-Settings.png)
+
 
