@@ -1,4 +1,5 @@
 ---
+# SERVER_IP  and SERVER_PORT should be where you are sending messages to from WSJTX
 SERVER_IP: "192.168.1.29"
 SERVER_PORT: 2237
 
@@ -6,18 +7,44 @@ MQTT_SERVER: "192.168.1.249"
 MQTT_SERVER_PORT: 1883
 BROKER_TOPIC: "wsjtx/dx"
 
+# specify four character maidenhead locator here
 MY_LOCATOR: "IO74"
+
+# The band configuration allows you to specify options per band. How these options are configured will determine
+# the notifications that are received. These options include the following:
+# MIN_DX: what is the minimum distance (in miles) considered to be DX
+# EXCLUDE_CALLSIGNS: callsign prefixes specified in this list will not be notified upon
+#
+# An example configuration would be as follows:
+#
+# BANDS:
+#   5031300:
+#    MIN_DX: 500
+#    EXCLUDE_CALLSIGNS:
+#      - F
+#  144174000:
+#    MIN_DX: 200
+#    EXCLUDE_CALLSIGNS:
+#      - GI
+#      - GM
+#
+# The first configuration is for 6m and would result in notifications only being sent under the following conditions:
+# - The decoded callsign is at least 500 miles away
+# - The decoded callsign is not prefixed with a F (France). Nothing against the French, just an example :)
+#
+# The second configuration is for 2m and would result in notifications only being sent under the following conditions:
+# - The decoded callsign is at least 200 miles away
+# - The decoded callsign is not prefixed with GI or GM
 
 BANDS:
   7074000:
-    MIN_DX: 200
-    ONLY_NEWCALL: True
-  5031300:
-    MIN_DX: 100
+    MIN_DX: 20
+  14074000:
     ONLY_NEWCALL: False
+  50313000:
+    MIN_DX: 100
   144174000:
-    MIN_DX: 200
-    ONLY_NEWCALL: True
+    MIN_DX: 20
     EXCLUDE_CALLSIGNS:
       - GI
 
